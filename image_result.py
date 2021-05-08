@@ -29,13 +29,16 @@ def download_images(keyword, home_dir):
     images = search(keyword)
     image_paths = []
     for i, image in enumerate(images):
-        r = requests.get(image['image'], stream=True)
-        extension = '.' + image['image'].split('.')[-1]
-        if len(extension) <= 5:
-            filepath = home_dir + keyword + str(i) + extension
+        try:
+            r = requests.get(image['image'], stream=True, timeout=5, verify=True)
             if r.status_code == 200:
-                r.raw.decode_content = True
-                with open(filepath, 'wb') as f:
-                    shutil.copyfileobj(r.raw, f)
-                image_paths.append(filepath)
+                extension = '.' + image['image'].split('.')[-1]
+                if len(extension) <= 5:
+                    filepath = home_dir + keyword + str(i) + extension
+                    r.raw.decode_content = True
+                    with open(filepath, 'wb') as f:
+                        shutil.copyfileobj(r.raw, f)
+                    image_paths.append(filepath)
+        except Exception:
+            pass
     return image_paths
