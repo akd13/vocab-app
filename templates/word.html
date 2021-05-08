@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <!-- Popper JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <title>{{ word }}</title>
+</head>
+<body>
+<h1 class="text-center">{{ word }}</h1>
+<h3>Definitions</h3>
+<ul class="list-group">
+    {% for definition in definitions %}
+        <li class="list-group-item">{{ definition }}</li>
+    {% endfor %}
+</ul>
+<h4>Synonyms</h4>
+<table class="table table-bordered">
+    <tbody>
+    <tr>
+        {% for synonym in synonyms %}
+            <td>{{ synonym }}</td>
+        {% endfor %}
+    </tr>
+    </tbody>
+</table>
+<h4>Images</h4>
+<table class="table table-bordered">
+    <tbody>
+    <tr>
+        {% for image in images %}
+            <td><img src={{ image }} alt="" border=3 height=200 width=200></td>
+        {% endfor %}
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>
