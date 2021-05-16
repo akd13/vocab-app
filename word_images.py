@@ -30,7 +30,7 @@ def download_images(keyword, home_dir):
     image_paths = []
     for i, image in enumerate(images):
         try:
-            r = requests.get(image['image'], stream=True, timeout=5, verify=True)
+            r = requests.get(image['image'], stream=True, timeout=8, verify=True)
             if r.status_code == 200:
                 extension = '.' + image['image'].split('.')[-1]
                 if len(extension) <= 5:

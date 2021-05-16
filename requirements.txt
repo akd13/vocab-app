@@ -1,3 +1,4 @@
 Flask~=1.1.2
 requests~=2.25.1
 PyDictionary~=2.0.1
+peewee
