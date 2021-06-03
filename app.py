@@ -4,12 +4,12 @@ from word_details import get_definition_synonyms
 from word_images import download_images
 from model.word import create_tables, find_word, get_definitions, get_synonyms, get_images, insert_word, \
     insert_definitions, insert_synonyms, insert_images
-import sys
+import sys, os
 create_tables()
 
 app = Flask(__name__)
 
-home_dir = './static/images/'
+home_dir = os.getcwd()+'/static/images/'
 
 
 @app.route('/')
