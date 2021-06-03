@@ -24,6 +24,7 @@ def define_word(word):
     if result is None:
         definitions, synonyms = get_definition_synonyms(word)
         images = download_images(word, home_dir)
+        print(images, 'IMAGES FROM MAIN AKANKSHITA')
         # insert into table
         word_id = insert_word(word)
         insert_definitions(word_id, definitions)
