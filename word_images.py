@@ -2,7 +2,7 @@ import json
 import re
 import shutil
 import requests
-import os
+import os, sys
 
 url = 'https://duckduckgo.com/'
 
@@ -44,4 +44,5 @@ def download_images(keyword, home_dir):
         except Exception:
             pass
     print(image_paths, os.getcwd(),'AKANKSHITA')
+    sys.stdout.flush()
     return image_paths

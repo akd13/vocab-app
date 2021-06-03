@@ -4,7 +4,7 @@ from word_details import get_definition_synonyms
 from word_images import download_images
 from model.word import create_tables, find_word, get_definitions, get_synonyms, get_images, insert_word, \
     insert_definitions, insert_synonyms, insert_images
-
+import sys
 create_tables()
 
 app = Flask(__name__)
@@ -25,6 +25,7 @@ def define_word(word):
         definitions, synonyms = get_definition_synonyms(word)
         images = download_images(word, home_dir)
         print(images, 'IMAGES FROM MAIN AKANKSHITA')
+        sys.stdout.flush()
         # insert into table
         word_id = insert_word(word)
         insert_definitions(word_id, definitions)
