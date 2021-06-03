@@ -41,8 +41,8 @@ def download_images(keyword, home_dir):
                         shutil.copyfileobj(r.raw, f)
                     image_paths.append(filepath)
             print(r.status_code, 'STATUS CODE')
-        except Exception:
-            pass
-    print(image_paths, os.getcwd(),'AKANKSHITA')
+        except Exception as e:
+            print(e, 'EXCEPTION HERE')
+    print(image_paths, os.getcwd(), 'AKANKSHITA')
     sys.stdout.flush()
     return image_paths
