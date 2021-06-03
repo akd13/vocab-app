@@ -40,13 +40,10 @@ def download_images(keyword, home_dir):
                     filepath = home_dir + keyword + str(i) + extension
                     r.raw.decode_content = True
                     print("DECODING")
-                    if not os.path.exists(filepath):
-                        os.makedirs(filepath)
                     with open(filepath, 'wb') as f:
                         print("OPENED FILE")
                         f.write(r.content)
                         f.close()
-                        # shutil.copyfileobj(r.raw, f)
                         print("COPIED FILE")
                     image_paths.append(filepath)
         except Exception as e:
