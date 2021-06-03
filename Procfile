@@ -1,1 +1,1 @@
-worker: python3 app.py --host=0.0.0.0
+web: gunicorn --bind 0.0.0.0:$PORT flaskapp:app
