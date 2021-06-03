@@ -2,7 +2,7 @@ import json
 import re
 import shutil
 import requests
-import os, sys
+import os
 
 url = 'https://duckduckgo.com/'
 
@@ -41,11 +41,13 @@ def download_images(keyword, home_dir):
                     r.raw.decode_content = True
                     print("DECODING")
                     with open(filepath, 'wb') as f:
-                        shutil.copyfileobj(r.raw, f)
+                        print("OPENED FILE")
+                        f.write(r.content)
+                        f.close()
+                        # shutil.copyfileobj(r.raw, f)
                         print("COPIED FILE")
                     image_paths.append(filepath)
         except Exception as e:
             print(e, 'EXCEPTION HERE')
     print(image_paths, os.getcwd(), 'AKANKSHITA')
-    sys.stdout.flush()
     return image_paths
