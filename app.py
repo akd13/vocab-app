@@ -23,7 +23,8 @@ def define_word(word):
     result = find_word(word)
     if result is None:
         definitions, synonyms = get_definition_synonyms(word)
-        images = download_images(word, home_dir)
+        is_empty = len(definitions) == 0 and len(synonyms) == 0
+        images = download_images(word, home_dir) if not is_empty else []
         # insert into table
         word_id = insert_word(word)
         insert_definitions(word_id, definitions)
