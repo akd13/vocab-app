@@ -40,11 +40,11 @@ def download_images(keyword, home_dir):
                     filepath = home_dir + keyword + str(i) + extension
                     r.raw.decode_content = True
                     print("DECODING")
-                    with open(filepath, 'wb') as f:
-                        print("OPENED FILE")
-                        f.write(r.content)
-                        f.close()
-                        print("COPIED FILE")
+                    f = open(filepath, 'wb')
+                    print("OPENED FILE")
+                    f.write(r.content)
+                    f.close()
+                    print("COPIED FILE")
                     image_paths.append(filepath)
         except Exception as e:
             print(e, 'EXCEPTION HERE')
