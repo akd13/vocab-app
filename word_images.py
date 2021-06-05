@@ -33,6 +33,8 @@ def download_images(keyword, home_dir):
         try:
             r = requests.get(image['image'], stream=True, timeout=8, verify=True)
             print(r.status_code, 'STATUS CODE')
+            if not os.path.exists(home_dir):
+                os.makedirs(home_dir)
             if r.status_code == 200:
                 extension = '.' + image['image'].split('.')[-1]
                 if len(extension) <= 5:
