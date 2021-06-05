@@ -9,8 +9,8 @@ create_tables()
 
 app = Flask(__name__)
 
-home_dir = os.getcwd()+'/static/images/'
-
+home_dir = './static/images/'
+os.mkdir(home_dir)
 
 @app.route('/')
 def hello_world():
