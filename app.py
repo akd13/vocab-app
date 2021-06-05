@@ -18,15 +18,15 @@ def hello_world():
 
 
 @app.route('/<string:word>')
-def define_word(word):
+def define_word(word:str):
     # check if word in table
-    result = find_word(word)
+    result = find_word(word.lower())
     if result is None:
         definitions, synonyms = get_definition_synonyms(word)
         is_empty = len(definitions) == 0 and len(synonyms) == 0
         images = download_images(word, home_dir) if not is_empty else []
         # insert into table
-        word_id = insert_word(word)
+        word_id = insert_word(word.lower())
         insert_definitions(word_id, definitions)
         insert_synonyms(word_id, synonyms)
         insert_images(word_id, images)
