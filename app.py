@@ -9,6 +9,7 @@ create_tables()
 
 app = Flask(__name__)
 
+home_dir = './static/images/'
 os.mkdir(home_dir)
 
 @app.route('/')
