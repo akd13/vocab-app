@@ -1,9 +1,9 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request, redirect, url_for
 
-from vocab.word_details import get_definition_synonyms
-from vocab.word_images import download_images
 from model.word import create_tables, find_word, get_definitions, get_synonyms, get_images, insert_word, \
     insert_definitions, insert_synonyms, insert_images
+from vocab.word_details import get_definition_synonyms
+from vocab.word_images import download_images
 
 create_tables()
 
@@ -17,8 +17,17 @@ def hello_world():
     return render_template('index.html')
 
 
-@app.route('/<string:word>')
-def define_word(word:str):
+@app.route('/define', methods=['POST', 'GET'])
+def enter_word():
+    if request.method == 'POST':
+        word = request.form
+        return redirect(url_for('define_word', word=word['Word']))
+    elif request.method == 'GET':
+        return render_template('input.html')
+
+
+@app.route('/define/<string:word>/')
+def define_word(word: str):
     # check if word in table
     result = find_word(word.lower())
     if result is None:

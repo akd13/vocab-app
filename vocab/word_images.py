@@ -42,7 +42,7 @@ def download_images(keyword, home_dir):
                     f = open(filepath, 'wb')
                     f.write(r.content)
                     f.close()
-                    image_paths.append(filepath)
+                    image_paths.append(filepath[1:])
         except Exception as e:
             print(e)
     return image_paths
