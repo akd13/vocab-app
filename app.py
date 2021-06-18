@@ -4,6 +4,7 @@ from model.word import create_tables, find_word, get_definitions, get_synonyms, 
     insert_definitions, insert_synonyms, insert_images
 from vocab.word_details import get_definition_synonyms
 from vocab.word_images import download_images
+from vocab.utils import pick_random_word
 
 create_tables()
 
@@ -17,19 +18,11 @@ def hello_world():
     return render_template('index.html')
 
 
-@app.route('/define', methods=['POST', 'GET'])
-def enter_word():
-    if request.method == 'POST':
-        word = request.form
-        return redirect(url_for('define_word', word=word['Word']))
-    elif request.method == 'GET':
-        return render_template('input.html')
-
-
-@app.route('/define/<string:word>/')
+@app.route('/define/<string:word>/', methods=['POST', 'GET'])
 def define_word(word: str):
     # check if word in table
     result = find_word(word.lower())
+
     if result is None:
         definitions, synonyms = get_definition_synonyms(word)
         is_empty = len(definitions) == 0 and len(synonyms) == 0
@@ -43,7 +36,14 @@ def define_word(word: str):
         definitions = get_definitions(result.id)
         synonyms = get_synonyms(result.id)
         images = get_images(result.id)
-    return render_template('word.html', word=word, definitions=definitions, synonyms=synonyms, images=images)
+    if request.method == 'GET':
+        return render_template('word.html', word=word, definitions=definitions, synonyms=synonyms, images=images)
+    else:
+        form_keys = request.form.keys()
+        if 'next' in form_keys:
+            return redirect(url_for('define_word', word=pick_random_word()))
+        else:
+            return redirect(url_for('define_word', word=request.form['Word']))
 
 
 if __name__ == '__main__':

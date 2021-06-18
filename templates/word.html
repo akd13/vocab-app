@@ -16,6 +16,9 @@
     <title>{{ word }}</title>
 </head>
 <body style="margin:1em;padding:1em">
+<form class="float-right" method="POST">
+    <p><input type="submit" name="next" value="Next"/></p>
+</form>
 <h1 class="text-center">{{ word }}</h1>
 <h3>Definitions</h3>
 <ul class="list-group">
@@ -43,5 +46,9 @@
     </tr>
     </tbody>
 </table>
+<form class="justify-content-center" method="POST">
+    <p>Check meaning: <input type="text" name="Word"/></p>
+    <p><input type="submit" name="word" value="submit"/></p>
+</form>
 </body>
 </html>
