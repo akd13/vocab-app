@@ -1,14 +1,16 @@
-from peewee import *
+import os
 
-db = SqliteDatabase('sqlite.db')
+from peewee import *
+from playhouse.db_url import connect
+
+if os.getenv('ENVIRONMENT', '') == 'local':
+    db = SqliteDatabase('sqlite.db')
+else:
+    db = connect(os.getenv('DATABASE_URL', ''))
 
 
 class Word(Model):
     word = CharField()
-
-    # definition = CharField()
-    # synonym = CharField()
-    # image = CharField()
 
     class Meta:
         database = db
@@ -18,19 +20,13 @@ class Definition(Model):
     word = ForeignKeyField(Word)
     definition = CharField()
 
-    # synonym = CharField()
-    # image = CharField()
-
     class Meta:
         database = db
 
 
 class Synonym(Model):
     word = ForeignKeyField(Word)
-    # definition = CharField()
     synonym = CharField()
-
-    # image = CharField()
 
     class Meta:
         database = db
@@ -38,8 +34,6 @@ class Synonym(Model):
 
 class Image(Model):
     word = ForeignKeyField(Word)
-    # definition = CharField()
-    # synonym = CharField()
     image = CharField()
 
     class Meta:
