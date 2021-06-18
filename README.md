@@ -15,3 +15,5 @@ A Heroku acount <br> Python 3.9.0 <br> virtualenv
 4. `heroku login`
 5. `heroku create`
 6. `git push heroku master`
+
+Currently deployed [here](https://nameless-ridge-97165.herokuapp.com).

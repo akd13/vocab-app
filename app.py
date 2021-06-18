@@ -2,9 +2,9 @@ from flask import Flask, render_template, request, redirect, url_for
 
 from model.word import create_tables, find_word, get_definitions, get_synonyms, get_images, insert_word, \
     insert_definitions, insert_synonyms, insert_images
+from vocab.utils import pick_random_word
 from vocab.word_details import get_definition_synonyms
 from vocab.word_images import download_images
-from vocab.utils import pick_random_word
 
 create_tables()
 
@@ -13,9 +13,12 @@ app = Flask(__name__)
 home_dir = './static/images/'
 
 
-@app.route('/')
-def hello_world():
-    return render_template('index.html')
+@app.route('/',methods=['POST', 'GET'])
+def pick_word():
+    if request.method == 'GET':
+        return render_template('index.html')
+    else:
+        return redirect(url_for('define_word', word=pick_random_word()))
 
 
 @app.route('/define/<string:word>/', methods=['POST', 'GET'])
