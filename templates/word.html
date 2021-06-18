@@ -17,7 +17,7 @@
 </head>
 <body style="margin:1em;padding:1em">
 <form class="float-right" method="POST">
-    <p><input type="submit" name="next" value="Next"/></p>
+    <p><input class="btn btn-success" type="submit" name="next" value="Next"/></p>
 </form>
 <h1 class="text-center">{{ word }}</h1>
 <h3>Definitions</h3>
@@ -46,9 +46,8 @@
     </tr>
     </tbody>
 </table>
-<form class="justify-content-center" method="POST">
-    <p>Check meaning: <input type="text" name="Word"/></p>
-    <p><input type="submit" name="word" value="submit"/></p>
+<form class="form-group justify-content-center" method="POST">
+    <p>Check meaning: <input class="form-group mx-sm-3 mb-2" type="text" name="Word"/><input class='btn btn-info' type="submit" name="word" value="submit"/></p>
 </form>
 </body>
 </html>
