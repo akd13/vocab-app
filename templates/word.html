@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="shortcut icon" href="#">
-
+    <link rel="stylesheet" type="text/css" href="/static/css/style.css">
     <!-- jQuery library -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
@@ -28,21 +28,21 @@
     {% endfor %}
 </ul>
 <h4 class="m-4">Synonyms</h4>
-<table class="table table-bordered table-responsive-sm ">
+<table class="table table-bordered">
     <tbody>
     <tr>
         {% for synonym in synonyms %}
-            <td>{{ synonym }}</td>
+            <td data-th>{{ synonym }}</td>
         {% endfor %}
     </tr>
     </tbody>
 </table>
 <h4 class="m-4">Images</h4>
-<table class="table table-bordered table-responsive-sm">
+<table class="table table-bordered">
     <tbody>
     <tr>
         {% for image in images %}
-            <td><img src={{ image }} alt="" border=3 height=200 width=200></td>
+            <td data-th><img src={{ image }} alt="" border=3 height=200 width=200></td>
         {% endfor %}
     </tr>
     </tbody>
