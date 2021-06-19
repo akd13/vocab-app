@@ -16,6 +16,6 @@ A Heroku acount <br> Python 3.9.0 <br> virtualenv
 5. `heroku create`
 6. `git push heroku main`
 
-Currently deployed [here](https://nameless-ridge-97165.herokuapp.com).
+Currently deployed [here](https://gre-vocab-app.herokuapp.com).
 Words are displayed from a pre-populated <b>wordlist.txt</b>, which is the current list of words I am trying to learn. <br>
 There is also an option to check the meaning of custom words.
