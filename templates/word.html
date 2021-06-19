@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="shortcut icon" href="#">
 
@@ -19,15 +20,15 @@
 <form class="float-right" method="POST">
     <p><input class="btn btn-success" type="submit" name="next" value="Next"/></p>
 </form>
-<h1 class="text-center">{{ word }}</h1>
-<h3>Definitions</h3>
+<h1 class="text-center m-4 p-2">{{ word }}</h1>
+<h3 class="m-4">Definitions</h3>
 <ul class="list-group">
     {% for definition in definitions %}
         <li class="list-group-item">{{ definition }}</li>
     {% endfor %}
 </ul>
-<h4>Synonyms</h4>
-<table class="table table-bordered">
+<h4 class="m-4">Synonyms</h4>
+<table class="table table-bordered table-responsive-sm ">
     <tbody>
     <tr>
         {% for synonym in synonyms %}
@@ -36,8 +37,8 @@
     </tr>
     </tbody>
 </table>
-<h4>Images</h4>
-<table class="table table-bordered">
+<h4 class="m-4">Images</h4>
+<table class="table table-bordered table-responsive-sm">
     <tbody>
     <tr>
         {% for image in images %}
@@ -47,7 +48,10 @@
     </tbody>
 </table>
 <form class="form-group justify-content-center" method="POST">
-    <p>Check meaning: <input class="form-group mx-sm-3 mb-2" type="text" name="Word"/><input class='btn btn-info' type="submit" name="word" value="submit"/></p>
+    <p>Check meaning:
+        <input class="form-group mx-sm-3 mb-2" type="text" name="Word"/>
+        <input class='btn btn-info' type="submit" name="word" value="submit"/>
+    </p>
 </form>
 </body>
 </html>
