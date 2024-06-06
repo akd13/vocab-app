@@ -1,5 +1,7 @@
+static/images
 venv
 .idea
 *.jpg
 *.png
 *.jpeg
+sqlite.db

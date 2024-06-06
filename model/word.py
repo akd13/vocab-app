@@ -1,7 +1,10 @@
 import os
 
-from peewee import *
+from peewee import SqliteDatabase, Model, CharField, ForeignKeyField
 from playhouse.db_url import connect
+
+db = SqliteDatabase('sqlite.db')
+
 
 if os.getenv('ENVIRONMENT', '') == 'local':
     db = SqliteDatabase('sqlite.db')
@@ -50,10 +53,10 @@ def find_word(word: str):
     return result.get() if result else None
 
 
-def get_definitions(word_id: int):
+def get_definition(word_id: int):
     result = Definition.select(Definition.definition).where(Definition.word_id == word_id)
-    definitions = [r.definition for r in result]
-    return definitions
+    definition = result.get().definition
+    return definition
 
 
 def get_synonyms(word_id: int):
@@ -72,9 +75,9 @@ def insert_word(word: str):
     return Word.insert(word=word).execute()
 
 
-def insert_definitions(word_id: int, definitions: list):
-    definition_list = [{'word_id': word_id, 'definition': definition} for definition in definitions]
-    Definition.insert_many(definition_list).execute()
+def insert_definition(word_id: int, definition: str):
+    definition_list = {'word_id': word_id, 'definition': definition}
+    Definition.insert(definition_list).execute()
 
 
 def insert_synonyms(word_id: int, synonyms: list):

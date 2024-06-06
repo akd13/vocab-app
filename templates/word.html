@@ -21,11 +21,9 @@
     <p><input class="btn btn-success" type="submit" name="next" value="Next"/></p>
 </form>
 <h1 class="text-center m-4 p-2">{{ word }}</h1>
-<h3 class="m-4">Definitions</h3>
+<h3 class="m-4">Definition</h3>
 <ul class="list-group">
-    {% for definition in definitions %}
-        <li class="list-group-item">{{ definition }}</li>
-    {% endfor %}
+    <li class="list-group-item">{{ definition }}</li>
 </ul>
 <h4 class="m-4">Synonyms</h4>
 <table class="table table-bordered">

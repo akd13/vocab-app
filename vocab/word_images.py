@@ -3,31 +3,21 @@ import re
 import shutil
 import requests
 import os
+from duckduckgo_search import DDGS
 
 url = 'https://duckduckgo.com/'
 
 
-def search(keywords):
-    params = get_auth_token(keywords)
-
-    request_url = url + "i.js"
-    response = requests.get(request_url, params=params)
-    image_url = json.loads(response.text)
-    return image_url["results"][:3]
-
-
-def get_auth_token(keywords):
-    response = requests.post(url, data={'q': keywords})
-    auth_token = re.search(r'vqd=([\d-]+)', response.text, re.M | re.I)
-    params = (
-        ('q', keywords),
-        ('vqd', auth_token.group(1))
+def search(keyword):
+    results = DDGS().images(
+        keywords=keyword
     )
-    return params
+
+    return results[:3]
 
 
 def download_images(keyword, home_dir):
-    images = search(keyword)
+    images = search(keyword+' meaning')
     image_paths = []
     for i, image in enumerate(images):
         try:
