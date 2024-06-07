@@ -6,10 +6,10 @@ from playhouse.db_url import connect
 db = SqliteDatabase('sqlite.db')
 
 
-if os.getenv('ENVIRONMENT', '') == 'local':
-    db = SqliteDatabase('sqlite.db')
-else:
-    db = connect(os.getenv('DATABASE_URL', ''))
+# if os.getenv('ENVIRONMENT', '') == 'local':
+#     db = SqliteDatabase('sqlite.db')
+# else:
+#     db = connect(os.getenv('DATABASE_URL', ''))
 
 
 class Word(Model):

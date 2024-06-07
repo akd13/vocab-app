@@ -4,7 +4,6 @@ bs4==0.0.1
 cachetools==4.2.2
 certifi==2020.12.5
 chardet==4.0.0
-click==7.1.2
 colorama==0.4.4
 duckduckgo-search==6.1.5
 distlib==0.3.1
