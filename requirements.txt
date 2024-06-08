@@ -1,4 +1,4 @@
-duckduckgo-search==6.1.5
+git+https://github.com/deedy5/duckduckgo_search.git
 Flask==3.0.3
 requests==2.32.3
 urllib3==2.2.1
