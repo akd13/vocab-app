@@ -18,11 +18,3 @@ def get_definition_synonyms(word):
     except Exception as e:
         print("Exception is", e)
         return "An error occurred", []
-
-
-# # Example usage:
-# word = "example"
-# definition, synonyms = get_definition_synonyms(word)
-# print("WORD IS", word)
-# print("DEFINITION IS", definition)
-# print("SYNONYMS ARE", synonyms)
