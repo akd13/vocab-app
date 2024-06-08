@@ -17,7 +17,7 @@ def search(keyword):
 
 
 def download_images(keyword, home_dir):
-    images = search(keyword+' meaning')
+    images = search(keyword)
     image_paths = []
     for i, image in enumerate(images):
         try:
