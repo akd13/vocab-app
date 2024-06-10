@@ -4,7 +4,7 @@ Words sourced from this [Excel sheet](https://docs.google.com/spreadsheets/d/1jR
 
 # Deployed on Render (2024)
 
-Currently deployed [here](https://gre-vocab-app.onrender.com/).
+Currently deployed [here](https://gre-vocab-app.onrender.com/). Heroku does not have a free tier anymore.
 Words are displayed from a pre-populated <b>wordlist.txt</b>, which is the current list of words I am trying to learn. <br>
 There is also an option to check the meaning of custom words.
 
