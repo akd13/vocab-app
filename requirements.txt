@@ -1,8 +1,10 @@
 git+https://github.com/deedy5/duckduckgo_search.git
-Flask==3.0.3
+Flask==2.0.1
 requests==2.32.3
 urllib3==2.2.1
 peewee==3.17.5
-werkzeug==3.0.3
-nltk==3.8.1
+werkzeug==2.0.3
+nltk==3.6.3
 gunicorn==22.0.0
+aiohttp==3.8.5
+asyncio==3.4.3

@@ -1,7 +1,7 @@
-import os
-
-from peewee import SqliteDatabase, Model, CharField, ForeignKeyField
-from playhouse.db_url import connect
+from peewee import SqliteDatabase, Model, CharField
+import sqlite3
+from typing import List, Optional
+from functools import lru_cache
 
 db = SqliteDatabase('sqlite.db')
 
@@ -11,32 +11,11 @@ else:
     db = connect(os.getenv('DATABASE_URL', ''))
 
 
-class Word(Model):
+class WordData(Model):
     word = CharField()
-
-    class Meta:
-        database = db
-
-
-class Definition(Model):
-    word = ForeignKeyField(Word)
-    definition = CharField()
-
-    class Meta:
-        database = db
-
-
-class Synonym(Model):
-    word = ForeignKeyField(Word)
-    synonym = CharField()
-
-    class Meta:
-        database = db
-
-
-class Image(Model):
-    word = ForeignKeyField(Word)
-    image = CharField()
+    definition = CharField(null=True)
+    synonym = CharField(null=True)
+    image = CharField(null=True)
 
     class Meta:
         database = db
@@ -45,80 +24,105 @@ class Image(Model):
 class WordRepository:
     """Utility class wrapping common database operations."""
 
-    def __init__(self, database=db) -> None:
-        self.db = database
+    def __init__(self):
+        self.conn = sqlite3.connect('sqlite.db', check_same_thread=False)
+        self.conn.row_factory = sqlite3.Row
+        self.create_tables()
 
-    def create_tables(self) -> None:
-        with self.db:
-            self.db.create_tables([Word, Definition, Synonym, Image])
+    def create_tables(self):
+        cursor = self.conn.cursor()
+        # Add indexes for faster lookups
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS words (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                word TEXT UNIQUE NOT NULL
+            )
+        ''')
+        cursor.execute('CREATE INDEX IF NOT EXISTS idx_word ON words(word)')
+        
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS definitions (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                word_id INTEGER NOT NULL,
+                definition TEXT NOT NULL,
+                FOREIGN KEY (word_id) REFERENCES words(id)
+            )
+        ''')
+        cursor.execute('CREATE INDEX IF NOT EXISTS idx_word_id ON definitions(word_id)')
+        
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS synonyms (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                word_id INTEGER NOT NULL,
+                synonym TEXT NOT NULL,
+                FOREIGN KEY (word_id) REFERENCES words(id)
+            )
+        ''')
+        cursor.execute('CREATE INDEX IF NOT EXISTS idx_synonym_word_id ON synonyms(word_id)')
+        
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS images (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                word_id INTEGER NOT NULL,
+                image_path TEXT NOT NULL,
+                FOREIGN KEY (word_id) REFERENCES words(id)
+            )
+        ''')
+        cursor.execute('CREATE INDEX IF NOT EXISTS idx_image_word_id ON images(word_id)')
+        
+        self.conn.commit()
 
-    def find_word(self, word: str):
-        result = Word.select().where(Word.word == word)
-        return result.get() if result else None
+    @lru_cache(maxsize=1000)
+    def find_word(self, word):
+        cursor = self.conn.cursor()
+        return cursor.execute('SELECT * FROM words WHERE word = ?', (word,)).fetchone()
 
-    def get_definition(self, word_id: int) -> str:
-        result = Definition.select(Definition.definition).where(Definition.word_id == word_id)
-        row = result.get() if result else None
-        return row.definition if row else ""
+    def insert_word(self, word):
+        cursor = self.conn.cursor()
+        cursor.execute('INSERT OR IGNORE INTO words (word) VALUES (?)', (word,))
+        self.conn.commit()
+        # Fetch the word ID (either newly inserted or existing)
+        cursor.execute('SELECT id FROM words WHERE word = ?', (word,))
+        result = cursor.fetchone()
+        return result['id'] if result else None
 
-    def get_synonyms(self, word_id: int):
-        result = Synonym.select(Synonym.synonym).where(Synonym.word_id == word_id)
-        return [r.synonym for r in result]
+    def insert_definition(self, word_id, definition):
+        cursor = self.conn.cursor()
+        cursor.execute('INSERT INTO definitions (word_id, definition) VALUES (?, ?)',
+                      (word_id, definition))
+        self.conn.commit()
 
-    def get_images(self, word_id: int):
-        result = Image.select(Image.image).where(Image.word_id == word_id)
-        return [r.image for r in result]
+    def insert_synonyms(self, word_id, synonyms):
+        cursor = self.conn.cursor()
+        for synonym in synonyms:
+            cursor.execute('INSERT INTO synonyms (word_id, synonym) VALUES (?, ?)',
+                         (word_id, synonym))
+        self.conn.commit()
 
-    def insert_word(self, word: str):
-        return Word.insert(word=word).execute()
+    def insert_images(self, word_id, images):
+        cursor = self.conn.cursor()
+        for image in images:
+            cursor.execute('INSERT INTO images (word_id, image_path) VALUES (?, ?)',
+                         (word_id, image))
+        self.conn.commit()
 
-    def insert_definition(self, word_id: int, definition: str):
-        Definition.insert({"word_id": word_id, "definition": definition}).execute()
+    @lru_cache(maxsize=1000)
+    def get_definition(self, word_id):
+        cursor = self.conn.cursor()
+        result = cursor.execute('SELECT definition FROM definitions WHERE word_id = ?',
+                              (word_id,)).fetchone()
+        return result['definition'] if result else ""
 
-    def insert_synonyms(self, word_id: int, synonyms: list):
-        synonym_list = [{"word_id": word_id, "synonym": syn} for syn in synonyms]
-        Synonym.insert_many(synonym_list).execute()
+    @lru_cache(maxsize=1000)
+    def get_synonyms(self, word_id):
+        cursor = self.conn.cursor()
+        results = cursor.execute('SELECT synonym FROM synonyms WHERE word_id = ?',
+                               (word_id,)).fetchall()
+        return [row['synonym'] for row in results]
 
-    def insert_images(self, word_id: int, images: list):
-        image_list = [{"word_id": word_id, "image": img} for img in images]
-        Image.insert_many(image_list).execute()
-
-
-# Backwards compatible helpers
-_repo = WordRepository()
-
-
-def create_tables():
-    _repo.create_tables()
-
-
-def find_word(word: str):
-    return _repo.find_word(word)
-
-
-def get_definition(word_id: int):
-    return _repo.get_definition(word_id)
-
-
-def get_synonyms(word_id: int):
-    return _repo.get_synonyms(word_id)
-
-
-def get_images(word_id: int):
-    return _repo.get_images(word_id)
-
-
-def insert_word(word: str):
-    return _repo.insert_word(word)
-
-
-def insert_definition(word_id: int, definition: str):
-    _repo.insert_definition(word_id, definition)
-
-
-def insert_synonyms(word_id: int, synonyms: list):
-    _repo.insert_synonyms(word_id, synonyms)
-
-
-def insert_images(word_id: int, images: list):
-    _repo.insert_images(word_id, images)
+    @lru_cache(maxsize=1000)
+    def get_images(self, word_id):
+        cursor = self.conn.cursor()
+        results = cursor.execute('SELECT image_path FROM images WHERE word_id = ?',
+                               (word_id,)).fetchall()
+        return [row['image_path'] for row in results]

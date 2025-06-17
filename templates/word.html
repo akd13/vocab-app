@@ -2,56 +2,90 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="shortcut icon" href="#">
-    <link rel="stylesheet" type="text/css" href="/static/css/style.css">
-    <!-- jQuery library -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-
-    <!-- Popper JS -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-
-    <!-- Latest compiled JavaScript -->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <title>{{ word }}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ word }} - Definition</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
-<body style="margin:1em;padding:1em">
-<form class="float-right" method="POST">
-    <p><input class="btn btn-success" type="submit" name="next" value="Next"/></p>
-</form>
-<h1 class="text-center m-4 p-2">{{ word }}</h1>
-<h3 class="m-4">Definition</h3>
-<ul class="list-group">
-    <li class="list-group-item">{{ definition }}</li>
-</ul>
-<h4 class="m-4">Synonyms</h4>
-<table class="table table-bordered">
-    <tbody>
-    <tr>
-        {% for synonym in synonyms %}
-            <td data-th>{{ synonym }}</td>
-        {% endfor %}
-    </tr>
-    </tbody>
-</table>
-<h4 class="m-4">Images</h4>
-<table class="table table-bordered">
-    <tbody>
-    <tr>
-        {% for image in images %}
-            <td data-th><img src={{ image }} alt="" border=3 height=200 width=200></td>
-        {% endfor %}
-    </tr>
-    </tbody>
-</table>
-<form class="form-group justify-content-center m-2" method="POST">
-    <p>Check meaning:
-        <input class="form-group mx-sm-3 mb-2" type="text" name="Word"/>
-        <input class='btn btn-secondary m-1' type="submit" name="word" value="submit"/>
-        <br>
-        <input class="btn btn-success m-1" type="submit" name="next" value="Next"/>
-    </p>
-</form>
+<body>
+    <div class="container">
+        <h1 class="word">{{ word }}</h1>
+        
+        <div class="definition">
+            {{ definition }}
+        </div>
+        
+        {% if synonyms %}
+        <div class="synonyms">
+            <h3>Synonyms:</h3>
+            <ul>
+                {% for synonym in synonyms %}
+                <li>{{ synonym }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+        
+        <div class="images">
+            <h3>Images:</h3>
+            <div id="images" class="image-grid">
+                <div class="loading">Loading images...</div>
+            </div>
+        </div>
+
+        <form method="post" class="next-word-form">
+            <button type="submit" name="next" class="next-button">Next Word</button>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const imagesContainer = document.getElementById('images');
+            
+            fetch(`/images/{{ word }}/`)
+                .then(response => response.json())
+                .then(data => {
+                    imagesContainer.innerHTML = '';
+                    if (data.images && data.images.length > 0) {
+                        data.images.forEach(image => {
+                            const imgDiv = document.createElement('div');
+                            imgDiv.className = 'image-item';
+                            
+                            // Add placeholder
+                            const placeholder = document.createElement('div');
+                            placeholder.className = 'image-placeholder';
+                            placeholder.textContent = 'Loading...';
+                            imgDiv.appendChild(placeholder);
+                            
+                            const img = document.createElement('img');
+                            img.src = image;
+                            img.alt = '{{ word }}';
+                            img.loading = 'lazy';
+                            img.className = 'loading';
+                            
+                            // Progressive loading
+                            img.onload = function() {
+                                this.classList.remove('loading');
+                                this.classList.add('loaded');
+                                placeholder.remove();
+                            };
+                            
+                            img.onerror = function() {
+                                placeholder.textContent = 'Failed to load';
+                                placeholder.style.color = '#dc3545';
+                            };
+                            
+                            imgDiv.appendChild(img);
+                            imagesContainer.appendChild(imgDiv);
+                        });
+                    } else {
+                        imagesContainer.innerHTML = '<div class="error">No images found</div>';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading images:', error);
+                    imagesContainer.innerHTML = '<div class="error">Failed to load images</div>';
+                });
+        });
+    </script>
 </body>
 </html>
