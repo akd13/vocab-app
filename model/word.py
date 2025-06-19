@@ -1,7 +1,8 @@
 from peewee import SqliteDatabase, Model, CharField
 import sqlite3
-from typing import List, Optional
+import os
 from functools import lru_cache
+from playhouse.db_url import connect
 
 db = SqliteDatabase('sqlite.db')
 
