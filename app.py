@@ -59,7 +59,17 @@ def pick_word():
     if request.method == 'GET':
         return render_template('index.html')
     else:
-        return redirect(url_for('define_word', word=picker.pick()))
+        form_keys = request.form.keys()
+        if 'next' in form_keys:
+            # Random word requested
+            return redirect(url_for('define_word', word=picker.pick()))
+        elif 'Word' in request.form and request.form['Word'].strip():
+            # User entered a word
+            word = request.form['Word'].strip()
+            return redirect(url_for('define_word', word=word))
+        else:
+            # Fallback: pick a random word
+            return redirect(url_for('define_word', word=picker.pick()))
 
 @app.route('/define/<string:word>/', methods=['POST', 'GET'])
 def define_word(word):
