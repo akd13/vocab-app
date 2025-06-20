@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from typing import Any
+
 from nltk.corpus import wordnet
 
 
@@ -10,12 +12,18 @@ class WordDetailsService:
 
     def get_details(self, word: str) -> tuple[str, list[str]]:
         try:
-            synsets = wordnet.synsets(word)
+            synsets: list[Any] = wordnet.synsets(word)
             if synsets:
                 first_synset = synsets[0]
                 definition = first_synset.definition()
-                synonyms = [lemma.name() for synset in synsets for lemma in synset.lemmas()]
-                return definition, synonyms[:5]
+                # Get all lemmas and filter out the original word
+                all_synonyms = [lemma.name() for synset in synsets for lemma in synset.lemmas()]
+                # Remove the original word (case-insensitive) and duplicates
+                filtered_synonyms = list(set([
+                    synonym for synonym in all_synonyms 
+                    if synonym.lower() != word.lower()
+                ]))
+                return definition, filtered_synonyms[:5]
             return "No definitions found", []
         except Exception as exc:  # pragma: no cover - defensive
             print("Exception is", exc)
