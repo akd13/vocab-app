@@ -97,14 +97,14 @@ class WordRepository:
         cursor = self.conn.cursor()
         for synonym in synonyms:
             cursor.execute('INSERT INTO synonyms (word_id, synonym) VALUES (?, ?)',
-                         (word_id, synonym))
+                           (word_id, synonym))
         self.conn.commit()
 
     def insert_images(self, word_id, images):
         cursor = self.conn.cursor()
         for image in images:
             cursor.execute('INSERT INTO images (word_id, image_path) VALUES (?, ?)',
-                         (word_id, image))
+                           (word_id, image))
         self.conn.commit()
 
     @lru_cache(maxsize=1000)
@@ -125,5 +125,6 @@ class WordRepository:
     def get_images(self, word_id):
         cursor = self.conn.cursor()
         results = cursor.execute('SELECT image_path FROM images WHERE word_id = ?',
-                               (word_id,)).fetchall()
-        return [row['image_path'] for row in results]
+                                (word_id,)).fetchall()
+        # Limit to three images to prevent multiple sets from showing
+        return [row['image_path'] for row in results][:3]
