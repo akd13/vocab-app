@@ -82,8 +82,6 @@ class WordRepository:
         cursor = self.conn.cursor()
         cursor.execute('INSERT OR IGNORE INTO words (word) VALUES (?)', (word,))
         self.conn.commit()
-        # Clear cached lookup so new word is returned on subsequent calls
-        self.find_word.cache_clear()
         # Fetch the word ID (either newly inserted or existing)
         cursor.execute('SELECT id FROM words WHERE word = ?', (word,))
         result = cursor.fetchone()
@@ -94,8 +92,6 @@ class WordRepository:
         cursor.execute('INSERT INTO definitions (word_id, definition) VALUES (?, ?)',
                       (word_id, definition))
         self.conn.commit()
-        # Invalidate cached definitions
-        self.get_definition.cache_clear()
 
     def insert_synonyms(self, word_id, synonyms):
         cursor = self.conn.cursor()
@@ -103,8 +99,6 @@ class WordRepository:
             cursor.execute('INSERT INTO synonyms (word_id, synonym) VALUES (?, ?)',
                            (word_id, synonym))
         self.conn.commit()
-        # Invalidate cached synonyms
-        self.get_synonyms.cache_clear()
 
     def insert_images(self, word_id, images):
         cursor = self.conn.cursor()
@@ -112,8 +106,6 @@ class WordRepository:
             cursor.execute('INSERT INTO images (word_id, image_path) VALUES (?, ?)',
                            (word_id, image))
         self.conn.commit()
-        # Invalidate cached images so duplicates aren't downloaded
-        self.get_images.cache_clear()
 
     @lru_cache(maxsize=1000)
     def get_definition(self, word_id):
